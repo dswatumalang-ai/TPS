@@ -78,39 +78,38 @@ input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-var SUPABASE_URL='https://yxdsposdynitiilowwll.supabase.co/rest/v1/',SUPABASE_KEY='sb_publishable_1bziAnAxdPAeYhZvcQIXvA_k2Xm7ky1';
+var SUPABASE_URL='GANTI_DENGAN_PROJECT_URL',SUPABASE_KEY='GANTI_DENGAN_ANON_PUBLIC_KEY';
 var K='pilkades-watumalang-v1', COL=['#0f9d58','#2563eb','#e0a800','#b83280'];
 function def(){return{desa:'Watumalang',kec:'Kec. Watumalang',per:'2027 – 2035',
  calon:['Calon 01','Calon 02','Calon 03','Calon 04'],
  tps:[1,2,3].map(function(i){return{nama:'TPS '+i,l:350,p:340,masuk:false,v:[0,0,0,0],ts:0}})}}
-var SB=null,ADMIN=false,MODE='lokal',SES=null,tmr=null,S=def();
+var SB=null,ADMIN=false,MODE='lokal',PIN='',tmr=null,S=def();
 try{S=JSON.parse(localStorage.getItem(K))||def()}catch(e){}
 if(!S.calon)S=def();
 function cache(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function active(){var e=document.activeElement;return e&&(e.tagName=='INPUT'||e.tagName=='SELECT')}
 function flash(m){msg=m;if(!active())render()}
-function save(){cache();if(!SB||!ADMIN)return;clearTimeout(tmr);tmr=setTimeout(function(){SB.from('state').upsert({id:1,data:S}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})},500)}
-function saveTps(i){if(!SB||!ADMIN)return;SB.rpc('simpan_tps',{p_idx:i,p_val:S.tps[i]}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})}
+function save(){cache();if(!SB||!ADMIN)return;clearTimeout(tmr);tmr=setTimeout(function(){SB.rpc('simpan_state',{p_pin:PIN,p_data:S}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})},500)}
+function saveTps(i){if(!SB||!ADMIN)return;SB.rpc('simpan_tps',{p_pin:PIN,p_idx:i,p_val:S.tps[i]}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})}
 async function init(){
  if(!window.supabase||SUPABASE_URL.indexOf('GANTI')>=0){ADMIN=true;MODE='lokal';render();return}
- SB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);MODE='lihat';
+ SB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});MODE='lihat';
  var r=await SB.from('state').select('data').eq('id',1).maybeSingle();
  if(r.data&&r.data.data&&r.data.data.calon){S=r.data.data;cache()}
  SB.channel('state').on('postgres_changes',{event:'*',schema:'public',table:'state'},function(p){if(p.new&&p.new.data&&p.new.data.calon){S=p.new.data;cache();if(active())head();else render()}}).subscribe();
- SB.auth.onAuthStateChange(function(ev,ses){setTimeout(function(){setAdmin(ses)},0)});
- var g=await SB.auth.getSession();await setAdmin(g.data.session)}
-async function setAdmin(ses){SES=ses;ADMIN=false;
- if(ses){var r=await SB.rpc('is_admin');ADMIN=r.data===true}
- MODE=ADMIN?'admin':'lihat';
- if(!ADMIN&&(tab=='input'||tab=='data'||tab=='calon'))tab='dash';
+ var p='';try{p=sessionStorage.getItem('pin')||''}catch(e){}
+ if(p)await cek(p);
  render()}
-function login(){SB.auth.signInWithPassword({email:document.getElementById('em').value.trim(),password:document.getElementById('pw').value}).then(function(r){if(r.error){msg='!Email atau kata sandi salah.';render()}else{msg='';tab='dash'}})}
-function logout(){SB.auth.signOut().then(function(){tab='dash';render()})}
-function loginV(){if(ADMIN)return'<div class="card"><h2>Akun admin</h2><div class="mut">Masuk sebagai '+esc(SES&&SES.user?SES.user.email:'')+'</div><button class="btn sec" style="margin-top:12px" onclick="logout()">Keluar</button></div>';
- return'<div class="card"><h2>Masuk admin panitia</h2><div class="mut">Hanya admin yang bisa mengisi suara dan mengubah data. Warga cukup membuka Dashboard.</div>'+(SES?'<div class="msg er">Akun ini belum terdaftar sebagai admin.</div>':'')
- +'<label>Email</label><input id="em" type="email" autocomplete="username"><label>Kata sandi</label><input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key==\'Enter\')login()"><div style="margin-top:14px"><button class="btn" onclick="login()">Masuk</button></div><div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
+async function cek(p){var r=await SB.rpc('cek_pin',{p_pin:p});
+ if(r.data===true){PIN=p;ADMIN=true;MODE='admin';try{sessionStorage.setItem('pin',p)}catch(e){}return true}
+ try{sessionStorage.removeItem('pin')}catch(e){}return false}
+function login(){var p=document.getElementById('pw').value;if(!p)return;cek(p).then(function(ok){if(ok){msg='';tab='dash'}else msg='!Kode PIN salah.';render()})}
+function logout(){PIN='';ADMIN=false;MODE='lihat';try{sessionStorage.removeItem('pin')}catch(e){}tab='dash';render()}
+function loginV(){if(ADMIN)return'<div class="card"><h2>Akun panitia</h2><div class="mut">Anda sedang masuk sebagai panitia.</div><button class="btn sec" style="margin-top:12px" onclick="logout()">Keluar</button></div>';
+ return'<div class="card"><h2>Masuk panitia</h2><div class="mut">Masukkan kode PIN panitia untuk mengisi suara dan mengubah data. Warga cukup membuka Dashboard.</div>'
+ +'<label>Kode PIN</label><input id="pw" type="password" autocomplete="off" onkeydown="if(event.key==\'Enter\')login()"><div style="margin-top:14px"><button class="btn" onclick="login()">Masuk</button></div><div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
 var tab='dash',cur=0,msg='',armed=false;
-var TABS=[['dash','Dashboard Live'],['rekap','Rekapitulasi per TPS'],['input','Input Suara'],['data','Data TPS & DPT'],['calon','Data Calon'],['login','Masuk admin']];
+var TABS=[['dash','Dashboard Live'],['rekap','Rekapitulasi per TPS'],['input','Input Suara'],['data','Data TPS & DPT'],['calon','Data Calon'],['login','Masuk panitia']];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function n(x){return (+x||0).toLocaleString('id-ID')}
 function pc(a,b){return b?(a/b*100).toFixed(2).replace('.',',')+'%':'0,00%'}
@@ -189,12 +188,10 @@ function calon(){var h='<div class="card"><h2>Data calon kepala desa</h2><div cl
  return h+'<div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
 function ph(i){var f=S.foto&&S.foto[i];return f?'<img class="ph" src="'+esc(f)+'" alt="Foto '+esc(S.calon[i])+'">':''}
 async function upFoto(i,el){var f=el.files[0];if(!f)return;
- try{var b=await shrink(f),url;
-  if(SB){var path='calon-'+(i+1)+'-'+Date.now()+'.jpg',r=await SB.storage.from('foto').upload(path,b,{contentType:'image/jpeg'});if(r.error)throw r.error;url=SB.storage.from('foto').getPublicUrl(path).data.publicUrl}
-  else url=await new Promise(function(ok){var fr=new FileReader();fr.onload=function(){ok(fr.result)};fr.readAsDataURL(b)});
+ try{var b=await shrink(f),url=await new Promise(function(ok){var fr=new FileReader();fr.onload=function(){ok(fr.result)};fr.readAsDataURL(b)});
   S.foto=S.foto||[];S.foto[i]=url;save();msg='Foto calon '+(i+1)+' tersimpan.';render()}
  catch(e){msg='!Foto gagal diunggah. Coba lagi.';render()}}
-function shrink(f){return new Promise(function(ok,no){var im=new Image();im.onload=function(){var s=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){b?ok(b):no()},'image/jpeg',.85)};im.onerror=no;im.src=URL.createObjectURL(f)})}
+function shrink(f){return new Promise(function(ok,no){var im=new Image();im.onload=function(){var s=Math.min(1,320/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){b?ok(b):no()},'image/jpeg',.8)};im.onerror=no;im.src=URL.createObjectURL(f)})}
 render();init();
 </script>
 </body>
