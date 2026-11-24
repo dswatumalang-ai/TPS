@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Real Count Pilkades Watumalang</title>
+<style>
+:root{--bg:#f3f6f2;--card:#fff;--tx:#14231a;--mut:#5d6f63;--line:#dbe4dc;--hd:#0f4d2e;--hd2:#0b3a23;--ac:#0f4d2e;--in:#f7faf7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1511;--card:#17211a;--tx:#e8f0ea;--mut:#9bb0a1;--line:#2a3a2f;--hd:#0b3a23;--hd2:#072818;--ac:#6fcf97;--in:#111a14;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1511;--card:#17211a;--tx:#e8f0ea;--mut:#9bb0a1;--line:#2a3a2f;--hd:#0b3a23;--hd2:#072818;--ac:#6fcf97;--in:#111a14;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(135deg,var(--hd),var(--hd2));color:#fff;padding:14px 16px 0}
+.badges{display:flex;gap:6px;margin-bottom:6px}
+.b{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px}
+.b1{background:#f5b800;color:#3a2a00}.b2{background:#d93636;color:#fff}
+h1{margin:0;font-size:20px;line-height:1.2}
+.sub{opacity:.8;font-size:13px;margin:2px 0 10px}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav button{flex:none;background:none;border:0;color:#cfe5d6;font:600 13px inherit;font-family:inherit;padding:10px 12px;border-radius:10px 10px 0 0;cursor:pointer}
+nav button.on{background:var(--bg);color:var(--tx)}
+nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #f5b800;outline-offset:2px}
+main{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 8px;font-size:16px}
+.mut{color:var(--mut);font-size:13px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;transition:width .4s}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:26px;line-height:1.15}
+.cands{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px}
+.cand{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:14px;padding:12px}
+.no{display:inline-block;background:var(--c);color:#fff;font-weight:700;border-radius:8px;padding:1px 10px;font-size:13px}
+.lead{float:right;font-size:12px;font-weight:700;color:var(--c)}
+.cand h3{margin:8px 0 10px;font-size:16px;line-height:1.25}
+.ph{width:64px;height:80px;object-fit:cover;border-radius:10px;background:var(--line);display:block;margin:10px 0 0}.cand .ph{width:84px;height:104px}
+.big{font-size:30px;font-weight:800;line-height:1}
+.pct{float:right;font-size:22px;font-weight:700;color:var(--c)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.row{grid-template-columns:1fr}}
+.donut{width:150px;height:150px;border-radius:50%;margin:6px auto;position:relative}
+.donut:after{content:"";position:absolute;inset:28px;background:var(--card);border-radius:50%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:13px}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:5px}
+.hb{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
+.hb .bar{flex:1;height:18px}.hb em{font-style:normal;min-width:56px;text-align:right}
+.hb u{text-decoration:none;min-width:70px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+tfoot td{font-weight:700;border-top:2px solid var(--line)}
+.sc{overflow-x:auto}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 3px}
+input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--in);color:var(--tx);font:inherit}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:11px 18px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+.dark .btn,:root[data-theme="dark"] .btn{color:#06210f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#06210f}}
+.btn.sec{background:none;color:var(--tx);border:1px solid var(--line)}
+.btn.dng{background:#c62828;color:#fff}
+.msg{margin-top:10px;font-weight:600}.ok{color:#2e9e5b}.er{color:#d33}
+.trow{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}
+.pill{font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px}
+.y{background:#d6f0de;color:#12622f}.n{background:#eceeed;color:#59655d}
+</style>
+</head>
+<body>
+<header>
+  <div class="badges"><span class="b b1">REAL COUNT</span><span class="b b2">LIVE DATA</span></div>
+  <h1 id="ttl"></h1>
+  <div class="sub" id="sub"></div>
+  <nav id="nav"></nav>
+</header>
+<main id="app"></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL='https://yxdsposdynitiilowwll.supabase.co/rest/v1/',SUPABASE_KEY='sb_publishable_1bziAnAxdPAeYhZvcQIXvA_k2Xm7ky1';
+var K='pilkades-watumalang-v1', COL=['#0f9d58','#2563eb','#e0a800','#b83280'];
+function def(){return{desa:'Watumalang',kec:'Kec. Watumalang',per:'2027 – 2035',
+ calon:['Calon 01','Calon 02','Calon 03','Calon 04'],
+ tps:[1,2,3].map(function(i){return{nama:'TPS '+i,l:350,p:340,masuk:false,v:[0,0,0,0],ts:0}})}}
+var SB=null,ADMIN=false,MODE='lokal',SES=null,tmr=null,S=def();
+try{S=JSON.parse(localStorage.getItem(K))||def()}catch(e){}
+if(!S.calon)S=def();
+function cache(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function active(){var e=document.activeElement;return e&&(e.tagName=='INPUT'||e.tagName=='SELECT')}
+function flash(m){msg=m;if(!active())render()}
+function save(){cache();if(!SB||!ADMIN)return;clearTimeout(tmr);tmr=setTimeout(function(){SB.from('state').upsert({id:1,data:S}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})},500)}
+function saveTps(i){if(!SB||!ADMIN)return;SB.rpc('simpan_tps',{p_idx:i,p_val:S.tps[i]}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})}
+async function init(){
+ if(!window.supabase||SUPABASE_URL.indexOf('GANTI')>=0){ADMIN=true;MODE='lokal';render();return}
+ SB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);MODE='lihat';
+ var r=await SB.from('state').select('data').eq('id',1).maybeSingle();
+ if(r.data&&r.data.data&&r.data.data.calon){S=r.data.data;cache()}
+ SB.channel('state').on('postgres_changes',{event:'*',schema:'public',table:'state'},function(p){if(p.new&&p.new.data&&p.new.data.calon){S=p.new.data;cache();if(active())head();else render()}}).subscribe();
+ SB.auth.onAuthStateChange(function(ev,ses){setTimeout(function(){setAdmin(ses)},0)});
+ var g=await SB.auth.getSession();await setAdmin(g.data.session)}
+async function setAdmin(ses){SES=ses;ADMIN=false;
+ if(ses){var r=await SB.rpc('is_admin');ADMIN=r.data===true}
+ MODE=ADMIN?'admin':'lihat';
+ if(!ADMIN&&(tab=='input'||tab=='data'||tab=='calon'))tab='dash';
+ render()}
+function login(){SB.auth.signInWithPassword({email:document.getElementById('em').value.trim(),password:document.getElementById('pw').value}).then(function(r){if(r.error){msg='!Email atau kata sandi salah.';render()}else{msg='';tab='dash'}})}
+function logout(){SB.auth.signOut().then(function(){tab='dash';render()})}
+function loginV(){if(ADMIN)return'<div class="card"><h2>Akun admin</h2><div class="mut">Masuk sebagai '+esc(SES&&SES.user?SES.user.email:'')+'</div><button class="btn sec" style="margin-top:12px" onclick="logout()">Keluar</button></div>';
+ return'<div class="card"><h2>Masuk admin panitia</h2><div class="mut">Hanya admin yang bisa mengisi suara dan mengubah data. Warga cukup membuka Dashboard.</div>'+(SES?'<div class="msg er">Akun ini belum terdaftar sebagai admin.</div>':'')
+ +'<label>Email</label><input id="em" type="email" autocomplete="username"><label>Kata sandi</label><input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key==\'Enter\')login()"><div style="margin-top:14px"><button class="btn" onclick="login()">Masuk</button></div><div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
+var tab='dash',cur=0,msg='',armed=false;
+var TABS=[['dash','Dashboard Live'],['rekap','Rekapitulasi per TPS'],['input','Input Suara'],['data','Data TPS & DPT'],['calon','Data Calon'],['login','Masuk admin']];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function n(x){return (+x||0).toLocaleString('id-ID')}
+function pc(a,b){return b?(a/b*100).toFixed(2).replace('.',',')+'%':'0,00%'}
+function T(){var t={dpt:0,sah:0,ts:0,tps:0,v:S.calon.map(function(){return 0})};
+ S.tps.forEach(function(p){t.dpt+=p.l+p.p;if(p.masuk){t.tps++;t.ts+=p.ts;p.v.forEach(function(x,i){t.v[i]+=x;t.sah+=x})}});
+ t.masuk=t.sah+t.ts;return t}
+function head(){document.getElementById('ttl').textContent='PILKADES DESA '+S.desa.toUpperCase()+' '+S.kec.toUpperCase();
+ document.getElementById('sub').textContent='Periode '+S.per+' ('+S.calon.length+' calon, '+S.tps.length+' TPS) · '+({lokal:'Mode lokal',admin:'Masuk sebagai admin',lihat:'Hanya lihat'})[MODE];
+ document.title='Real Count Pilkades '+S.desa;
+ document.getElementById('nav').innerHTML=TABS.filter(function(t){return t[0]=='login'?!!SB:(ADMIN||t[0]=='dash'||t[0]=='rekap')}).map(function(t){return'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+(t[0]=='login'&&ADMIN?'Akun':t[1])+'</button>'}).join('')}
+function go(t){tab=t;msg='';armed=false;render()}
+function render(){head();var a=document.getElementById('app');
+ a.innerHTML=({dash:dash,rekap:rekap,input:input,data:data,calon:calon,login:loginV})[tab]();window.scrollTo(0,0)}
+
+function dash(){var t=T(),mx=Math.max.apply(null,t.v),h='';
+ h+='<div class="card"><h2>Progres suara masuk TPS</h2><div class="mut">Data diperbarui dari berita acara penghitungan suara di '+S.tps.length+' TPS.</div>'
+ +'<div style="display:flex;justify-content:space-between;margin:8px 0 4px;font-weight:600"><span>'+t.tps+' dari '+S.tps.length+' TPS masuk</span><span>'+pc(t.tps,S.tps.length)+'</span></div>'
+ +'<div class="bar"><i style="width:'+(S.tps.length?t.tps/S.tps.length*100:0)+'%;background:var(--ac)"></i></div></div>';
+ h+='<div class="stats">'
+ +'<div class="stat"><span class="mut">Jumlah DPT</span><b>'+n(t.dpt)+'</b><span class="mut">L: '+n(sum('l'))+' | P: '+n(sum('p'))+'</span></div>'
+ +'<div class="stat"><span class="mut">Suara masuk</span><b>'+n(t.masuk)+'</b><span class="mut">Partisipasi: '+pc(t.masuk,t.dpt)+'</span></div>'
+ +'<div class="stat"><span class="mut">Suara sah</span><b>'+n(t.sah)+'</b><span class="mut">'+pc(t.sah,t.masuk)+' dari suara masuk</span></div>'
+ +'<div class="stat"><span class="mut">Tidak sah</span><b>'+n(t.ts)+'</b><span class="mut">'+pc(t.ts,t.masuk)+' dari suara masuk</span></div>'
+ +'<div class="stat"><span class="mut">Belum/tidak hadir</span><b>'+n(t.dpt-t.masuk)+'</b><span class="mut">'+pc(t.dpt-t.masuk,t.dpt)+' dari total DPT</span></div></div>';
+ h+='<h2 style="font-size:17px;margin:4px 0 10px">Perolehan suara calon kepala desa</h2><div class="cands">';
+ S.calon.forEach(function(c,i){var lead=t.sah>0&&t.v[i]===mx&&t.v.filter(function(x){return x===mx}).length===1;
+  h+='<div class="cand" style="--c:'+COL[i]+'"><span class="no">No. '+String(i+1).padStart(2,'0')+'</span>'+(lead?'<span class="lead">Unggul</span>':'')
+  +ph(i)+'<h3>'+esc(c)+'</h3><span class="pct">'+pc(t.v[i],t.sah)+'</span><div class="big">'+n(t.v[i])+' <span class="mut" style="font-size:13px;font-weight:400">suara</span></div>'
+  +'<div class="bar" style="margin-top:10px"><i style="width:'+(t.sah?t.v[i]/t.sah*100:0)+'%;background:'+COL[i]+'"></i></div></div>'});
+ h+='</div><div class="row"><div class="card"><h2>Grafik perolehan suara</h2>';
+ S.calon.forEach(function(c,i){h+='<div class="hb"><u>No. '+(i+1)+'</u><div class="bar"><i style="width:'+(mx?t.v[i]/mx*100:0)+'%;background:'+COL[i]+'"></i></div><em>'+n(t.v[i])+'</em></div>'});
+ var a=t.sah/(t.dpt||1)*100,b=a+t.ts/(t.dpt||1)*100;
+ h+='</div><div class="card"><h2>Komposisi penggunaan hak pilih</h2><div class="donut" style="background:conic-gradient(#2e9e5b 0 '+a+'%,#d33 '+a+'% '+b+'%,#9aa8a0 '+b+'% 100%)"></div>'
+ +'<div class="leg"><span style="--c:#2e9e5b">Sah</span><span style="--c:#d33">Tidak sah</span><span style="--c:#9aa8a0">Belum hadir</span></div></div></div>';
+ return h}
+function sum(k){return S.tps.reduce(function(s,p){return s+p[k]},0)}
+
+function rekap(){var t=T(),h='<div class="card"><h2>Rekapitulasi per TPS</h2><div class="sc"><table><thead><tr><th>TPS</th><th>DPT</th><th>Status</th>';
+ S.calon.forEach(function(c,i){h+='<th>No. '+(i+1)+'</th>'});h+='<th>Sah</th><th>Tidak sah</th><th>Partisipasi</th></tr></thead><tbody>';
+ S.tps.forEach(function(p){var d=p.l+p.p,s=p.v.reduce(function(a,b){return a+b},0);
+  h+='<tr><td>'+esc(p.nama)+'</td><td>'+n(d)+'</td><td><span class="pill '+(p.masuk?'y':'n')+'">'+(p.masuk?'Masuk':'Belum')+'</span></td>'
+  +p.v.map(function(x){return'<td>'+(p.masuk?n(x):'-')+'</td>'}).join('')+'<td>'+(p.masuk?n(s):'-')+'</td><td>'+(p.masuk?n(p.ts):'-')+'</td><td>'+(p.masuk?pc(s+p.ts,d):'-')+'</td></tr>'});
+ h+='</tbody><tfoot><tr><td>Total</td><td>'+n(t.dpt)+'</td><td>'+t.tps+'/'+S.tps.length+'</td>'+t.v.map(function(x){return'<td>'+n(x)+'</td>'}).join('')+'<td>'+n(t.sah)+'</td><td>'+n(t.ts)+'</td><td>'+pc(t.masuk,t.dpt)+'</td></tr></tfoot></table></div></div>';
+ return h}
+
+function input(){var p=S.tps[cur];if(!p){cur=0;p=S.tps[0]}
+ var h='<div class="card"><h2>Input perolehan suara</h2><div class="mut">Isi dari berita acara penghitungan suara.</div><label>Pilih TPS</label><select onchange="cur=+this.value;msg=\'\';render()">'
+ +S.tps.map(function(q,i){return'<option value="'+i+'"'+(i==cur?' selected':'')+'>'+esc(q.nama)+(q.masuk?' (sudah masuk)':'')+'</option>'}).join('')+'</select>'
+ +'<div class="mut" style="margin-top:6px">DPT '+esc(p.nama)+': '+n(p.l+p.p)+' (L '+n(p.l)+' | P '+n(p.p)+')</div><div class="g2">';
+ S.calon.forEach(function(c,i){h+='<div><label>No. '+(i+1)+' – '+esc(c)+'</label><input type="number" min="0" inputmode="numeric" id="v'+i+'" value="'+(p.masuk?p.v[i]:'')+'" placeholder="0"></div>'});
+ h+='<div><label>Suara tidak sah</label><input type="number" min="0" inputmode="numeric" id="ts" value="'+(p.masuk?p.ts:'')+'" placeholder="0"></div></div>'
+ +'<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" onclick="saveV()">Simpan suara</button>'+(p.masuk?'<button class="btn sec" onclick="clearV()">Kosongkan TPS ini</button>':'')+'</div><div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>';
+ return h}
+function saveV(){var p=S.tps[cur],v=S.calon.map(function(c,i){return Math.max(0,parseInt(document.getElementById('v'+i).value)||0)}),
+ ts=Math.max(0,parseInt(document.getElementById('ts').value)||0),tot=v.reduce(function(a,b){return a+b},0)+ts;
+ if(tot>p.l+p.p){msg='!Total suara ('+n(tot)+') melebihi DPT '+p.nama+' ('+n(p.l+p.p)+'). Periksa lagi angkanya.';render();return}
+ p.v=v;p.ts=ts;p.masuk=true;cache();saveTps(cur);msg='Suara '+p.nama+' tersimpan.';render()}
+function clearV(){var p=S.tps[cur];p.v=S.calon.map(function(){return 0});p.ts=0;p.masuk=false;cache();saveTps(cur);msg='Data '+p.nama+' dikosongkan.';render()}
+
+function data(){var h='<div class="card"><h2>Data desa</h2><div class="g2"><div><label>Nama desa</label><input value="'+esc(S.desa)+'" oninput="S.desa=this.value;save();head()"></div>'
+ +'<div><label>Kecamatan</label><input value="'+esc(S.kec)+'" oninput="S.kec=this.value;save();head()"></div></div><label>Periode jabatan</label><input value="'+esc(S.per)+'" oninput="S.per=this.value;save();head()"></div>'
+ +'<div class="card"><h2>Data TPS dan DPT</h2>';
+ S.tps.forEach(function(p,i){h+='<div class="trow"><div><label>Nama TPS</label><input value="'+esc(p.nama)+'" oninput="S.tps['+i+'].nama=this.value;save()"></div>'
+  +'<div><label>DPT laki-laki</label><input type="number" min="0" value="'+p.l+'" oninput="S.tps['+i+'].l=Math.max(0,+this.value||0);save()"></div>'
+  +'<div><label>DPT perempuan</label><input type="number" min="0" value="'+p.p+'" oninput="S.tps['+i+'].p=Math.max(0,+this.value||0);save()"></div>'
+  +'<button class="btn sec" aria-label="Hapus TPS" onclick="delT('+i+')">Hapus</button></div>'});
+ h+='<button class="btn" onclick="addT()">Tambah TPS</button></div>'
+ +'<div class="card"><h2>Reset suara</h2><div class="mut">Menghapus semua suara yang sudah diinput. Data TPS dan calon tetap.</div><button class="btn dng" style="margin-top:10px" onclick="rst()">'+(armed?'Klik lagi untuk menghapus semua suara':'Reset semua suara')+'</button></div>';
+ return h}
+function addT(){S.tps.push({nama:'TPS '+(S.tps.length+1),l:0,p:0,masuk:false,v:S.calon.map(function(){return 0}),ts:0});save();render()}
+function delT(i){if(S.tps.length<2)return;S.tps.splice(i,1);cur=0;save();render()}
+function rst(){if(!armed){armed=true;render();return}S.tps.forEach(function(p){p.masuk=false;p.ts=0;p.v=S.calon.map(function(){return 0})});armed=false;save();render()}
+
+function calon(){var h='<div class="card"><h2>Data calon kepala desa</h2><div class="mut">Nama ditulis lengkap dengan gelar, sesuai penetapan panitia.</div>';
+ S.calon.forEach(function(c,i){h+='<label><span class="no" style="--c:'+COL[i]+';background:'+COL[i]+';color:#fff;padding:1px 8px;border-radius:8px">No. '+String(i+1).padStart(2,'0')+'</span></label><input value="'+esc(c)+'" oninput="S.calon['+i+']=this.value;save()"><div style="display:flex;align-items:center;gap:10px;margin-top:8px">'+(ph(i)||'<div class="ph" style="margin:0"></div>')+'<label class="btn sec" style="margin:0;cursor:pointer">Unggah foto<input type="file" accept="image/*" hidden onchange="upFoto('+i+',this)"></label></div>'});
+ return h+'<div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
+function ph(i){var f=S.foto&&S.foto[i];return f?'<img class="ph" src="'+esc(f)+'" alt="Foto '+esc(S.calon[i])+'">':''}
+async function upFoto(i,el){var f=el.files[0];if(!f)return;
+ try{var b=await shrink(f),url;
+  if(SB){var path='calon-'+(i+1)+'-'+Date.now()+'.jpg',r=await SB.storage.from('foto').upload(path,b,{contentType:'image/jpeg'});if(r.error)throw r.error;url=SB.storage.from('foto').getPublicUrl(path).data.publicUrl}
+  else url=await new Promise(function(ok){var fr=new FileReader();fr.onload=function(){ok(fr.result)};fr.readAsDataURL(b)});
+  S.foto=S.foto||[];S.foto[i]=url;save();msg='Foto calon '+(i+1)+' tersimpan.';render()}
+ catch(e){msg='!Foto gagal diunggah. Coba lagi.';render()}}
+function shrink(f){return new Promise(function(ok,no){var im=new Image();im.onload=function(){var s=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){b?ok(b):no()},'image/jpeg',.85)};im.onerror=no;im.src=URL.createObjectURL(f)})}
+render();init();
+</script>
+</body>
+</html>
