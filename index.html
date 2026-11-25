@@ -83,33 +83,24 @@ var K='pilkades-watumalang-v1', COL=['#0f9d58','#2563eb','#e0a800','#b83280'];
 function def(){return{desa:'Watumalang',kec:'Kec. Watumalang',per:'2027 – 2035',
  calon:['Calon 01','Calon 02','Calon 03','Calon 04'],
  tps:[1,2,3].map(function(i){return{nama:'TPS '+i,l:350,p:340,masuk:false,v:[0,0,0,0],ts:0}})}}
-var SB=null,ADMIN=false,MODE='lokal',PIN='',tmr=null,S=def();
+var SB=null,ADMIN=false,MODE='lokal',tmr=null,S=def();
 try{S=JSON.parse(localStorage.getItem(K))||def()}catch(e){}
 if(!S.calon)S=def();
 function cache(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function active(){var e=document.activeElement;return e&&(e.tagName=='INPUT'||e.tagName=='SELECT')}
 function flash(m){msg=m;if(!active())render()}
-function save(){cache();if(!SB||!ADMIN)return;clearTimeout(tmr);tmr=setTimeout(function(){SB.rpc('simpan_state',{p_pin:PIN,p_data:S}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})},500)}
-function saveTps(i){if(!SB||!ADMIN)return;SB.rpc('simpan_tps',{p_pin:PIN,p_idx:i,p_val:S.tps[i]}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})}
+function save(){cache();if(!SB||!ADMIN)return;clearTimeout(tmr);tmr=setTimeout(function(){SB.from('state').upsert({id:1,data:S}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})},500)}
+function saveTps(i){if(!SB||!ADMIN)return;SB.rpc('simpan_tps',{p_idx:i,p_val:S.tps[i]}).then(function(r){if(r.error)flash('!Gagal menyimpan: '+r.error.message)})}
 async function init(){
  if(!window.supabase||SUPABASE_URL.indexOf('GANTI')>=0){ADMIN=true;MODE='lokal';render();return}
  SB=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});MODE='lihat';
  var r=await SB.from('state').select('data').eq('id',1).maybeSingle();
  if(r.data&&r.data.data&&r.data.data.calon){S=r.data.data;cache()}
  SB.channel('state').on('postgres_changes',{event:'*',schema:'public',table:'state'},function(p){if(p.new&&p.new.data&&p.new.data.calon){S=p.new.data;cache();if(active())head();else render()}}).subscribe();
- var p='';try{p=sessionStorage.getItem('pin')||''}catch(e){}
- if(p)await cek(p);
+ ADMIN=true;MODE='terbuka';
  render()}
-async function cek(p){var r=await SB.rpc('cek_pin',{p_pin:p});
- if(r.data===true){PIN=p;ADMIN=true;MODE='admin';try{sessionStorage.setItem('pin',p)}catch(e){}return true}
- try{sessionStorage.removeItem('pin')}catch(e){}return false}
-function login(){var p=document.getElementById('pw').value;if(!p)return;cek(p).then(function(ok){if(ok){msg='';tab='dash'}else msg='!Kode PIN salah.';render()})}
-function logout(){PIN='';ADMIN=false;MODE='lihat';try{sessionStorage.removeItem('pin')}catch(e){}tab='dash';render()}
-function loginV(){if(ADMIN)return'<div class="card"><h2>Akun panitia</h2><div class="mut">Anda sedang masuk sebagai panitia.</div><button class="btn sec" style="margin-top:12px" onclick="logout()">Keluar</button></div>';
- return'<div class="card"><h2>Masuk panitia</h2><div class="mut">Masukkan kode PIN panitia untuk mengisi suara dan mengubah data. Warga cukup membuka Dashboard.</div>'
- +'<label>Kode PIN</label><input id="pw" type="password" autocomplete="off" onkeydown="if(event.key==\'Enter\')login()"><div style="margin-top:14px"><button class="btn" onclick="login()">Masuk</button></div><div class="msg '+(msg[0]=='!'?'er':'ok')+'">'+esc(msg.replace(/^!/,''))+'</div></div>'}
 var tab='dash',cur=0,msg='',armed=false;
-var TABS=[['dash','Dashboard Live'],['rekap','Rekapitulasi per TPS'],['input','Input Suara'],['data','Data TPS & DPT'],['calon','Data Calon'],['login','Masuk panitia']];
+var TABS=[['dash','Dashboard Live'],['rekap','Rekapitulasi per TPS'],['input','Input Suara'],['data','Data TPS & DPT'],['calon','Data Calon']];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function n(x){return (+x||0).toLocaleString('id-ID')}
 function pc(a,b){return b?(a/b*100).toFixed(2).replace('.',',')+'%':'0,00%'}
@@ -117,12 +108,12 @@ function T(){var t={dpt:0,sah:0,ts:0,tps:0,v:S.calon.map(function(){return 0})};
  S.tps.forEach(function(p){t.dpt+=p.l+p.p;if(p.masuk){t.tps++;t.ts+=p.ts;p.v.forEach(function(x,i){t.v[i]+=x;t.sah+=x})}});
  t.masuk=t.sah+t.ts;return t}
 function head(){document.getElementById('ttl').textContent='PILKADES DESA '+S.desa.toUpperCase()+' '+S.kec.toUpperCase();
- document.getElementById('sub').textContent='Periode '+S.per+' ('+S.calon.length+' calon, '+S.tps.length+' TPS) · '+({lokal:'Mode lokal',admin:'Masuk sebagai admin',lihat:'Hanya lihat'})[MODE];
+ document.getElementById('sub').textContent='Periode '+S.per+' ('+S.calon.length+' calon, '+S.tps.length+' TPS) · '+({lokal:'Mode lokal',admin:'Masuk sebagai admin',lihat:'Hanya lihat',terbuka:'Online, tersinkron'})[MODE];
  document.title='Real Count Pilkades '+S.desa;
  document.getElementById('nav').innerHTML=TABS.filter(function(t){return t[0]=='login'?!!SB:(ADMIN||t[0]=='dash'||t[0]=='rekap')}).map(function(t){return'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+(t[0]=='login'&&ADMIN?'Akun':t[1])+'</button>'}).join('')}
 function go(t){tab=t;msg='';armed=false;render()}
 function render(){head();var a=document.getElementById('app');
- a.innerHTML=({dash:dash,rekap:rekap,input:input,data:data,calon:calon,login:loginV})[tab]();window.scrollTo(0,0)}
+ a.innerHTML=({dash:dash,rekap:rekap,input:input,data:data,calon:calon})[tab]();window.scrollTo(0,0)}
 
 function dash(){var t=T(),mx=Math.max.apply(null,t.v),h='';
  h+='<div class="card"><h2>Progres suara masuk TPS</h2><div class="mut">Data diperbarui dari berita acara penghitungan suara di '+S.tps.length+' TPS.</div>'
